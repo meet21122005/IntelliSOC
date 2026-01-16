@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Automation Platform | SecureOps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0c4a6e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism card */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Slide in animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        /* Input focus glow */
+        .input-glow:focus {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            border-color: rgba(59, 130, 246, 0.8);
+        }
+
+        /* Button hover effect */
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Particle background */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: particleFloat 20s infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(100vw, -100vh) scale(0);
+            }
+        }
+
+        /* Stat card hover */
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Custom scrollbar for main content */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+
+    <!-- Particle Background -->
+    <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
+        <div class="glass-strong rounded-3xl p-8 md:p-12 w-full max-w-md fade-in">
+            <!-- Logo and Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 glass rounded-2xl mb-4 float">
+                    <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">SecureOps</h1>
+                <p class="text-gray-300 text-sm">Security Automation Platform</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-200 mb-2">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        class="w-full px-4 py-3 glass rounded-xl text-white placeholder-gray-400 focus:outline-none input-glow transition-all duration-300"
+                        placeholder="admin@secureops.com"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-200 mb-2">Password</label>
+                    <input 
+                        type="password" 
+                        id="password"
+                        class="w-full px-4 py-3 glass rounded-xl text-white placeholder-gray-400 focus:outline-none input-glow transition-all duration-300"
+                        placeholder="••••••••"
+                        required
+                    />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-600 bg-transparent text-blue-500 focus:ring-blue-500 focus:ring-offset-0">
+                        <span class="ml-2 text-sm text-gray-300">Remember me</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">Forgot password?</a>
+                </div>
+
+                <button 
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold btn-hover shadow-lg"
+                >
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="relative my-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-600"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-4 glass rounded-full text-gray-300">Demo Credentials</span>
+                </div>
+            </div>
+
+            <!-- Demo Info -->
+            <div class="glass rounded-xl p-4 text-center">
+                <p class="text-xs text-gray-300 mb-1">Email: <span class="text-blue-400 font-medium">admin@secureops.com</span></p>
+                <p class="text-xs text-gray-300">Password: <span class="text-blue-400 font-medium">admin123</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="hidden min-h-screen relative z-10">
+        <!-- Sidebar -->
+        <aside class="fixed left-0 top-0 h-full w-64 glass-strong border-r border-white/10 p-6 custom-scrollbar overflow-y-auto">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 glass rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-white font-bold text-lg">SecureOps</h2>
+                    <p class="text-xs text-gray-400">v2.4.1</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <span class="font-medium">Alerts</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">12</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span class="font-medium">Analytics</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="font-medium">Forensics</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span class="font-medium">Playbooks</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="font-medium">Settings</span>
+                </a>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <div class="glass rounded-xl p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                        A
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-medium">Admin User</p>
+                        <p class="text-gray-400 text-xs">admin@secureops.com</p>
+                    </div>
+                    <button id="logoutBtn" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="ml-64 p-8 custom-scrollbar overflow-y-auto" style="height: 100vh;">
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white mb-2 slide-in">Security Dashboard</h1>
+                        <p class="text-gray-400 slide-in">Real-time threat monitoring and analysis</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="glass px-4 py-2 rounded-xl text-white hover:bg-white/10 transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </button>
+                        <div class="glass px-4 py-2 rounded-xl text-white flex items-center gap-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full pulse"></div>
+                            <span class="text-sm">All Systems Operational</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Stat Card 1 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-red-400">+12%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Active Alerts</h3>
+                    <p class="text-3xl font-bold text-white">247</p>
+                </div>
+
+                <!-- Stat Card 2 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-green-400">+8%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Resolved Cases</h3>
+                    <p class="text-3xl font-bold text-white">1,428</p>
+                </div>
+
+                <!-- Stat Card 3 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-purple-400">24/7</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Playbooks Running</h3>
+                    <p class="text-3xl font-bold text-white">18</p>
+                </div>
+
+                <!-- Stat Card 4 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-orange-400">Real-time</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Avg Response Time</h3>
+                    <p class="text-3xl font-bold text-white">2.4m</p>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Recent Alerts -->
+                <div class="lg:col-span-2 glass rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white">Recent Alerts</h2>
+                        <button class="text-blue-400 text-sm hover:text-blue-300 transition-colors">View All →</button>
+                    </div>
+                    <div class="space-y-4">
+                        <!-- Alert Item -->
+                        <div class="glass rounded-xl p-4 hover:bg-white/10 transition-all cursor-pointer">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <h3 class="text-white font-medium">Suspicious Login Attempt</h3>
+                                        <span class="text-xs text-gray-400">2m ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400 mb-2">Multiple failed login attempts from IP 192.168.1.xxx</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs glass px-2 py-1 rounded-full text-red-400">Critical</span>
+                                        <span class="text-xs glass px-2 py-1 rounded-full text-gray-400">Authentication</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alert Item -->
+                        <div class="glass rounded-xl p-4 hover:bg-white/10 transition-all cursor-pointer">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <h3 class="text-white font-medium">Unusual Network Traffic</h3>
+                                        <span class="text-xs text-gray-400">15m ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400 mb-2">Outbound traffic spike detected on port 443</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs glass px-2 py-1 rounded-full text-yellow-400">Medium</span>
+                                        <span class="text-xs glass px-2 py-1 rounded-full text-gray-400">Network</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alert Item -->
+                        <div class="glass rounded-xl p-4 hover:bg-white/10 transition-all cursor-pointer">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <h3 class="text-white font-medium">System Update Available</h3>
+                                        <span class="text-xs text-gray-400">1h ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400 mb-2">Security patch v2.4.2 ready for deployment</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs glass px-2 py-1 rounded-full text-blue-400">Info</span>
+                                        <span class="text-xs glass px-2 py-1 rounded-full text-gray-400">System</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold text-white mb-6">System Status</h2>
+                    <div class="space-y-6">
+                        <!-- Status Item -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">Detection Engine</span>
+                                <span class="text-sm text-green-400">100%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-400 to-green-500" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Status Item -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">Correlation Engine</span>
+                                <span class="text-sm text-green-400">98%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-400 to-green-500" style="width: 98%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Status Item -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">ML Detection</span>
+                                <span class="text-sm text-blue-400">95%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-blue-400 to-blue-500" style="width: 95%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Status Item -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">Forensics Module</span>
+                                <span class="text-sm text-yellow-400">87%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-500" style="width: 87%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="pt-4 border-t border-white/10">
+                            <h3 class="text-sm font-medium text-gray-300 mb-3">Quick Actions</h3>
+                            <div class="space-y-2">
+                                <button id="runScanBtn" class="w-full glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all text-left">
+                                    🔍 Run Manual Scan
+                                </button>
+                                <button id="generateReportBtn" class="w-full glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all text-left">
+                                    📊 Generate Report
+                                </button>
+                                <button id="configureRulesBtn" class="w-full glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all text-left">
+                                    ⚙️ Configure Rules
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-xl font-bold text-white mb-6">Activity Timeline</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            <div class="w-px h-full bg-white/10 mt-2"></div>
+                        </div>
+                        <div class="flex-1 pb-6">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Playbook Executed</h3>
+                                <span class="text-xs text-gray-400">5 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Auto-response playbook "Block Suspicious IP" completed successfully</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="w-px h-full bg-white/10 mt-2"></div>
+                        </div>
+                        <div class="flex-1 pb-6">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Threat Mitigated</h3>
+                                <span class="text-xs text-gray-400">12 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Potential malware detected and quarantined on endpoint WKS-042</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            <div class="w-px h-full bg-white/10 mt-2"></div>
+                        </div>
+                        <div class="flex-1 pb-6">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Rule Updated</h3>
+                                <span class="text-xs text-gray-400">28 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Detection rule "Brute Force Login" parameters adjusted</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Correlation Alert</h3>
+                                <span class="text-xs text-gray-400">45 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Pattern detected: Multiple events correlated into single incident</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 100 + 50;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simple validation (demo purposes)
+            if (email && password) {
+                // Add fade out animation to login page
+                document.getElementById('loginPage').style.animation = 'fadeOut 0.5s ease-out forwards';
+                
+                setTimeout(() => {
+                    document.getElementById('loginPage').classList.add('hidden');
+                    document.getElementById('dashboardPage').classList.remove('hidden');
+                    
+                    // Add fade in animation to dashboard
+                    const dashboard = document.getElementById('dashboardPage');
+                    dashboard.style.animation = 'fadeIn 0.8s ease-out forwards';
+                }, 500);
+            }
+        });
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            document.getElementById('dashboardPage').style.animation = 'fadeOut 0.5s ease-out forwards';
+            
+            setTimeout(() => {
+                document.getElementById('dashboardPage').classList.add('hidden');
+                document.getElementById('loginPage').classList.remove('hidden');
+                document.getElementById('loginPage').style.animation = 'fadeIn 0.8s ease-out forwards';
+                
+                // Reset form
+                document.getElementById('loginForm').reset();
+            }, 500);
+        });
+
+        // Add fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                to {
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize particles
+        createParticles();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const randomStat = Math.floor(Math.random() * 4);
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards[randomStat]) {
+                statCards[randomStat].style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    statCards[randomStat].style.transform = '';
+                }, 200);
+            }
+        }, 5000);
+
+        // Wire Quick Actions to APIs
+        document.getElementById('runScanBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/logs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({source: 'manual-scan', message: 'Manual scan initiated'})
+                });
+                const data = await res.json();
+                alert('Scan initiated: ' + JSON.stringify(data));
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        });
+
+        document.getElementById('generateReportBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/alerts');
+                const data = await res.json();
+                alert('Alerts count: ' + data.length);
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        });
+
+        document.getElementById('configureRulesBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/alerts', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({title: 'Rule Configured', severity: 'low', description: 'New rule added'})
+                });
+                const data = await res.json();
+                alert('Rule configured: ' + JSON.stringify(data));
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        });
+    </script>
+</body>
+</html>
