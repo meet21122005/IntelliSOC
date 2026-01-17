@@ -9,7 +9,7 @@ init_db()
 
 @app.route("/")
 def dashboard():
-    return render_template("index.html")
+    return render_template("dashboard.html")
 
 @app.route("/api/logs", methods=["POST"])
 def receive_logs():
@@ -30,6 +30,22 @@ def fetch_logs():
 @app.route("/api/alerts", methods=["GET"])
 def fetch_alerts():
     return jsonify(get_alerts())
+
+@app.route("/api/analytics", methods=["GET"])
+def fetch_analytics():
+    return jsonify({"summary": "Analytics data: 100 logs processed, 5 alerts detected"})
+
+@app.route("/api/forensics", methods=["GET"])
+def fetch_forensics():
+    return jsonify({"items": ["Suspicious file detected", "Anomaly in network traffic", "Unauthorized access attempt"]})
+
+@app.route("/api/playbooks", methods=["GET"])
+def fetch_playbooks():
+    return jsonify({"playbooks": ["Incident Response", "Malware Analysis", "Data Breach Response"]})
+
+@app.route("/api/settings", methods=["GET"])
+def fetch_settings():
+    return jsonify({"settings": {"alert_threshold": "high", "auto_response": "enabled"}})
 
 if __name__ == "__main__":
     app.run()
