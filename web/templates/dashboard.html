@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Automation Platform | SecureOps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Mobile/text adjustments */
+        html, body {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0c4a6e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism card */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Slide in animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        /* Stat card hover */
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Custom scrollbar for main content */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Particle background */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: particleFloat 20s infinite;
+        }
+
+        /* Toast notifications */
+        #toastContainer {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+            background: rgba(17, 24, 39, 0.95);
+            color: #fff;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .toast.success { border-left: 4px solid #10b981; }
+        .toast.info { border-left: 4px solid #3b82f6; }
+        .toast.warn { border-left: 4px solid #f59e0b; }
+        .toast.error { border-left: 4px solid #ef4444; }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(100vw, -100vh) scale(0);
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+
+    <!-- Particle Background -->
+    <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden"></div>
+
+    <!-- Dashboard -->
+    <div class="min-h-screen relative z-10">
+        <!-- Sidebar -->
+        <aside class="fixed left-0 top-0 h-full w-64 glass-strong border-r border-white/10 p-6 custom-scrollbar overflow-y-auto">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 glass rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-white font-bold text-lg">SecureOps</h2>
+                    <p class="text-xs text-gray-400">v2.4.1</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <button id="sidebarDashboard" title="View main dashboard with stats, alerts, and logs" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 transition-all w-full text-left font-medium">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </button>
+
+                <button id="sidebarAlerts" title="View detailed alerts and threat information" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    Alerts
+                    <span id="alertsBadge" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">12</span>
+                </button>
+
+                <button id="sidebarAnalytics" title="View security analytics and reporting" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    Analytics
+                </button>
+
+                <button id="sidebarForensics" title="Access digital forensics tools and evidence analysis" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Forensics
+                </button>
+
+                <button id="sidebarPlaybooks" title="Manage automated security response playbooks" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Playbooks
+                </button>
+
+                <button id="sidebarSettings" title="Configure system settings and preferences" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-all w-full text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Settings
+                </button>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <div class="glass rounded-xl p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                        A
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-medium">Admin User</p>
+                        <p class="text-gray-400 text-xs">admin@secureops.com</p>
+                    </div>
+                    <button id="logoutBtn" type="button" aria-label="Logout" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="ml-64 p-8 custom-scrollbar overflow-y-auto" style="height: 100vh;">
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white mb-2 slide-in">Security Dashboard</h1>
+                        <p class="text-gray-400 slide-in">Real-time threat monitoring and analysis</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                                <button type="button" aria-label="Notifications" class="glass px-4 py-2 rounded-xl text-white hover:bg-white/10 transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </button>
+                        <div class="glass px-4 py-2 rounded-xl text-white flex items-center gap-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full pulse"></div>
+                            <span class="text-sm">All Systems Operational</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div id="statsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Stat Card 1 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-red-400">+12%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Active Alerts</h3>
+                    <p class="text-3xl font-bold text-white">247</p>
+                </div>
+
+                <!-- Stat Card 2 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-green-400">+8%</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Resolved Cases</h3>
+                    <p class="text-3xl font-bold text-white">1,428</p>
+                </div>
+
+                <!-- Stat Card 3 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-purple-400">24/7</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Playbooks Running</h3>
+                    <p class="text-3xl font-bold text-white">18</p>
+                </div>
+
+                <!-- Stat Card 4 -->
+                <div class="glass stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs glass px-2 py-1 rounded-full text-orange-400">Real-time</span>
+                    </div>
+                    <h3 class="text-gray-400 text-sm mb-1">Avg Response Time</h3>
+                    <p class="text-3xl font-bold text-white">2.4m</p>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div id="mainGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Recent Alerts -->
+                <div class="lg:col-span-2 glass rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white">Recent Alerts</h2>
+                        <button id="viewAllAlertsBtn" class="text-blue-400 text-sm hover:text-blue-300 transition-colors">View All →</button>
+                    </div>
+                    <div id="alertsContainer" class="space-y-4">
+                        <!-- Dynamic alerts will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Recent Logs -->
+                <div class="glass rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-white">Recent Logs</h2>
+                            <button id="viewAllLogsBtn" class="text-blue-400 text-sm hover:text-blue-300 transition-colors">View All →</button>
+                        </div>
+                    <div id="logsContainer" class="space-y-4">
+                        <!-- Dynamic logs will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Alerts View (Hidden by default) -->
+            <div id="fullAlertsView" class="hidden glass rounded-2xl p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-white">All Alerts</h2>
+                    <button id="backToDashboardBtn" class="glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all">
+                        ← Back to Dashboard
+                    </button>
+                </div>
+                <div id="fullAlertsContainer" class="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                    <!-- Full alerts will be loaded here -->
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div id="systemStatus" class="glass rounded-2xl p-6 mb-8">
+                <h2 class="text-xl font-bold text-white mb-6">System Status</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Status Items -->
+                    <div class="space-y-6">
+                        <!-- Status Item -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">Detection Engine</span>
+                                <span class="text-sm text-green-400">100%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-400 to-green-500" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Status Item -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">Correlation Engine</span>
+                                <span class="text-sm text-green-400">98%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-400 to-green-500" style="width: 98%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-300">ML Detection</span>
+                                <span class="text-sm text-blue-400">95%</span>
+                            </div>
+                            <div class="w-full h-2 glass rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-blue-400 to-blue-500" style="width: 95%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="pt-4 border-t border-white/10">
+                            <h3 class="text-sm font-medium text-gray-300 mb-3">Quick Actions</h3>
+                            <div class="space-y-2">
+                                <button id="runScanBtn" class="w-full glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all text-left">
+                                    🔍 Run Manual Scan
+                                </button>
+                                <button id="generateReportBtn" class="w-full glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all text-left">
+                                    📊 Generate Report
+                                </button>
+                                <button id="configureRulesBtn" class="w-full glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all text-left">
+                                    ⚙️ Configure Rules
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div id="activityTimeline" class="glass rounded-2xl p-6">
+                <h2 class="text-xl font-bold text-white mb-6">Activity Timeline</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            <div class="w-px h-full bg-white/10 mt-2"></div>
+                        </div>
+                        <div class="flex-1 pb-6">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Playbook Executed</h3>
+                                <span class="text-xs text-gray-400">5 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Auto-response playbook "Block Suspicious IP" completed successfully</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="w-px h-full bg-white/10 mt-2"></div>
+                        </div>
+                        <div class="flex-1 pb-6">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Threat Mitigated</h3>
+                                <span class="text-xs text-gray-400">12 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Potential malware detected and quarantined on endpoint WKS-042</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            <div class="w-px h-full bg-white/10 mt-2"></div>
+                        </div>
+                        <div class="flex-1 pb-6">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Rule Updated</h3>
+                                <span class="text-xs text-gray-400">28 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Detection rule "Brute Force Login" parameters adjusted</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="text-white font-medium">Correlation Alert</h3>
+                                <span class="text-xs text-gray-400">45 minutes ago</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Pattern detected: Multiple events correlated into single incident</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View (Hidden by default) -->
+            <div id="analyticsView" class="hidden">
+                <div class="glass rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white">Analytics Dashboard</h2>
+                        <button id="backToDashboardFromAnalytics" class="glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+                    <div class="space-y-6">
+                        <p class="text-gray-400">Advanced security analytics and reporting features:</p>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Threat trend analysis</li>
+                            <li>• Incident response metrics</li>
+                            <li>• Performance dashboards</li>
+                            <li>• Custom report generation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forensics View (Hidden by default) -->
+            <div id="forensicsView" class="hidden">
+                <div class="glass rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white">Digital Forensics</h2>
+                        <button id="backToDashboardFromForensics" class="glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+                    <div class="space-y-6">
+                        <p class="text-gray-400">Digital forensics and evidence collection tools:</p>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Log analysis and correlation</li>
+                            <li>• Evidence preservation</li>
+                            <li>• Timeline reconstruction</li>
+                            <li>• Chain of custody management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playbooks View (Hidden by default) -->
+            <div id="playbooksView" class="hidden">
+                <div class="glass rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white">Security Playbooks</h2>
+                        <button id="backToDashboardFromPlaybooks" class="glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+                    <div class="space-y-6">
+                        <p class="text-gray-400">Automated incident response playbooks:</p>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Malware outbreak response</li>
+                            <li>• DDoS attack mitigation</li>
+                            <li>• Data breach containment</li>
+                            <li>• Custom playbook creation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View (Hidden by default) -->
+            <div id="settingsView" class="hidden">
+                <div class="glass rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white">System Settings</h2>
+                        <button id="backToDashboardFromSettings" class="glass px-4 py-2 rounded-xl text-sm text-white hover:bg-white/10 transition-all">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+                    <div class="space-y-6">
+                        <p class="text-gray-400">System configuration and preferences:</p>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>• Alert thresholds and rules</li>
+                            <li>• User management</li>
+                            <li>• Integration settings</li>
+                            <li>• System maintenance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 100 + 50;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            window.location.href = '/';
+        });
+
+        // Initialize particles
+        createParticles();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const randomStat = Math.floor(Math.random() * 4);
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards[randomStat]) {
+                statCards[randomStat].style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    statCards[randomStat].style.transform = '';
+                }, 200);
+            }
+        }, 5000);
+
+        // Wire Quick Actions to APIs
+        document.getElementById('runScanBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/logs', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({source: 'manual-scan', message: 'Manual scan initiated'})
+                });
+                const data = await res.json();
+                if (data.alerts && data.alerts.length) {
+                    showToast(`Scan generated ${data.alerts.length} alert${data.alerts.length>1?'s':''}`, 'warn', 6000);
+                } else {
+                    showToast('Scan initiated', 'success', 3000);
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error', 6000);
+            }
+        });
+
+        document.getElementById('generateReportBtn').addEventListener('click', () => {
+            showFullAlerts();
+        });
+
+        document.getElementById('configureRulesBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/alerts', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({title: 'Rule Configured', severity: 'low', description: 'New rule added'})
+                });
+                const data = await res.json();
+                alert('Rule configured: ' + JSON.stringify(data));
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        });
+
+        // View All Alerts button
+        document.getElementById('viewAllAlertsBtn').addEventListener('click', () => {
+            showFullAlerts();
+        });
+
+        // Back to Dashboard button
+        document.getElementById('backToDashboardBtn').addEventListener('click', () => {
+            setActiveNav('sidebarDashboard');
+            hideAllViews();
+        });
+
+        // Load alerts and logs on page load
+        async function loadAlerts(full = false) {
+            try {
+                const res = await fetch('/api/alerts');
+                const alerts = await res.json();
+                const container = full ? document.getElementById('fullAlertsContainer') : document.getElementById('alertsContainer');
+                container.innerHTML = '';
+                const displayAlerts = full ? alerts : alerts.slice(0, 10); // Show all or recent 10
+                displayAlerts.forEach(alert => {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'p-4 bg-red-500/20 border border-red-500/30 rounded-lg';
+                    alertDiv.innerHTML = `<strong>${alert.title}</strong><br>IP: ${alert.ip}<br>Severity: ${alert.severity}<br>${alert.description}`;
+                    container.appendChild(alertDiv);
+                });
+            } catch (e) {
+                console.error('Error loading alerts:', e);
+            }
+        }
+
+        async function loadLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                const logs = await res.json();
+                const container = document.getElementById('logsContainer');
+                container.innerHTML = '';
+                logs.slice(0, 10).forEach(log => { // Show recent 10
+                    const logDiv = document.createElement('div');
+                    logDiv.className = 'p-4 bg-gray-700/50 border border-gray-600 rounded-lg';
+                    logDiv.innerHTML = `<strong>${log.event_type}</strong><br>IP: ${log.ip}<br>User: ${log.user}<br>${log.message}`;
+                    container.appendChild(logDiv);
+                });
+            } catch (e) {
+                console.error('Error loading logs:', e);
+            }
+        }
+
+        // Toggle functions
+        function hideAllViews() {
+            document.getElementById('fullAlertsView').classList.add('hidden');
+            document.getElementById('analyticsView').classList.add('hidden');
+            document.getElementById('forensicsView').classList.add('hidden');
+            document.getElementById('playbooksView').classList.add('hidden');
+            document.getElementById('settingsView').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            hideAllViews();
+            document.getElementById('statsGrid').classList.remove('hidden');
+            document.getElementById('mainGrid').classList.remove('hidden');
+            document.getElementById('systemStatus').classList.remove('hidden');
+            document.getElementById('activityTimeline').classList.remove('hidden');
+        }
+
+        function showFullAlerts() {
+            // hide main dashboard sections
+            document.getElementById('statsGrid').classList.add('hidden');
+            document.getElementById('mainGrid').classList.add('hidden');
+            document.getElementById('systemStatus').classList.add('hidden');
+            document.getElementById('activityTimeline').classList.add('hidden');
+            hideAllViews();
+            document.getElementById('fullAlertsView').classList.remove('hidden');
+            loadAlerts(true); // Load all alerts when showing the full alerts view
+        }
+
+        function showAnalytics() {
+            document.getElementById('statsGrid').classList.add('hidden');
+            document.getElementById('mainGrid').classList.add('hidden');
+            document.getElementById('systemStatus').classList.add('hidden');
+            document.getElementById('activityTimeline').classList.add('hidden');
+            hideAllViews();
+            document.getElementById('analyticsView').classList.remove('hidden');
+            loadAnalytics();
+        }
+
+        function showForensics() {
+            document.getElementById('statsGrid').classList.add('hidden');
+            document.getElementById('mainGrid').classList.add('hidden');
+            document.getElementById('systemStatus').classList.add('hidden');
+            document.getElementById('activityTimeline').classList.add('hidden');
+            hideAllViews();
+            document.getElementById('forensicsView').classList.remove('hidden');
+            loadForensics();
+        }
+
+        function showPlaybooks() {
+            document.getElementById('statsGrid').classList.add('hidden');
+            document.getElementById('mainGrid').classList.add('hidden');
+            document.getElementById('systemStatus').classList.add('hidden');
+            document.getElementById('activityTimeline').classList.add('hidden');
+            hideAllViews();
+            document.getElementById('playbooksView').classList.remove('hidden');
+            loadPlaybooks();
+        }
+
+        function showSettings() {
+            document.getElementById('statsGrid').classList.add('hidden');
+            document.getElementById('mainGrid').classList.add('hidden');
+            document.getElementById('systemStatus').classList.add('hidden');
+            document.getElementById('activityTimeline').classList.add('hidden');
+            hideAllViews();
+            document.getElementById('settingsView').classList.remove('hidden');
+            loadSettings();
+        }
+
+        // Loaders for each view (keeps everything in this file, realtime friendly)
+        async function loadAnalytics() {
+            try {
+                const res = await fetch('/api/analytics');
+                const data = res.ok ? await res.json() : {summary: 'No analytics endpoint'};
+                const el = document.getElementById('analyticsView');
+                el.querySelector('.space-y-6').innerHTML = `<p class="text-gray-400">${data.summary || 'Analytics snapshot'}</p>`;
+            } catch (e) {
+                console.error('loadAnalytics error', e);
+            }
+        }
+
+        async function loadForensics() {
+            try {
+                const res = await fetch('/api/forensics');
+                const data = res.ok ? await res.json() : {items: []};
+                const el = document.getElementById('forensicsView');
+                const list = (data.items || []).slice(0,10).map(i=>`<li class="text-gray-300">• ${i}</li>`).join('') || '<li class="text-gray-300">No recent forensic items</li>';
+                el.querySelector('.space-y-6').innerHTML = `<p class="text-gray-400">Recent forensic items:</p><ul class="text-gray-300 space-y-2">${list}</ul>`;
+            } catch (e) {
+                console.error('loadForensics error', e);
+            }
+        }
+
+        async function loadPlaybooks() {
+            try {
+                const res = await fetch('/api/playbooks');
+                const data = res.ok ? await res.json() : {playbooks: []};
+                const el = document.getElementById('playbooksView');
+                const list = (data.playbooks || []).slice(0,10).map(p=>`<li class="text-gray-300">• ${p.name} — ${p.status}</li>`).join('') || '<li class="text-gray-300">No active playbooks</li>';
+                el.querySelector('.space-y-6').innerHTML = `<p class="text-gray-400">Automated playbooks:</p><ul class="text-gray-300 space-y-2">${list}</ul>`;
+            } catch (e) {
+                console.error('loadPlaybooks error', e);
+            }
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const data = res.ok ? await res.json() : {items: []};
+                const el = document.getElementById('settingsView');
+                el.querySelector('.space-y-6').innerHTML = `<p class="text-gray-400">Settings overview loaded.</p>`;
+            } catch (e) {
+                console.error('loadSettings error', e);
+            }
+        }
+
+        function setActiveNav(activeId) {
+            const navLinks = ['sidebarDashboard', 'sidebarAlerts', 'sidebarAnalytics', 'sidebarForensics', 'sidebarPlaybooks', 'sidebarSettings'];
+            navLinks.forEach(id => {
+                const link = document.getElementById(id);
+                if (id === activeId) {
+                    link.classList.add('bg-blue-500/20', 'text-blue-400', 'border', 'border-blue-500/30');
+                    link.classList.remove('text-gray-300');
+                } else {
+                    link.classList.remove('bg-blue-500/20', 'text-blue-400', 'border', 'border-blue-500/30');
+                    link.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        
+
+        // Simple toast notifications
+        const toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        document.body.appendChild(toastContainer);
+
+        function showToast(message, type = 'info', timeout = 5000) {
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerText = message;
+            toastContainer.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateY(-8px)';
+                setTimeout(() => t.remove(), 300);
+            }, timeout);
+        }
+
+        // Track last alerts count to show new-alert toasts
+        let lastAlertsCount = 0;
+        async function loadAlerts(full = false) {
+            try {
+                const res = await fetch('/api/alerts');
+                const alerts = await res.json();
+                const container = full ? document.getElementById('fullAlertsContainer') : document.getElementById('alertsContainer');
+                container.innerHTML = '';
+                const displayAlerts = full ? alerts : alerts.slice(0, 10); // Show all or recent 10
+                displayAlerts.forEach(alert => {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'p-4 bg-red-500/20 border border-red-500/30 rounded-lg';
+                    alertDiv.innerHTML = `<strong>${alert.title}</strong><br>IP: ${alert.ip}<br>Severity: ${alert.severity}<br>${alert.description}`;
+                    container.appendChild(alertDiv);
+                });
+
+                // Update alerts badge
+                const badge = document.getElementById('alertsBadge');
+                if (badge) {
+                    if (alerts.length > 0) {
+                        badge.innerText = alerts.length;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+                // Show toast when new alerts are available (only when not in full view)
+                if (!full) {
+                    const currentCount = alerts.length;
+                    if (currentCount > lastAlertsCount) {
+                        const diff = currentCount - lastAlertsCount;
+                        showToast(`${diff} new alert${diff > 1 ? 's' : ''}`, 'info', 5000);
+                    }
+                    lastAlertsCount = currentCount;
+                }
+            } catch (e) {
+                console.error('Error loading alerts:', e);
+            }
+        }
+
+        // Ensure all event listeners are attached reliably
+        function attachEventListeners() {
+            console.log('Attaching event listeners');
+
+            // Sidebar button event listeners
+            document.getElementById('sidebarAlerts')?.addEventListener('click', () => {
+                setActiveNav('sidebarAlerts');
+                showFullAlerts();
+            });
+
+            document.getElementById('sidebarDashboard')?.addEventListener('click', () => {
+                setActiveNav('sidebarDashboard');
+                showDashboard();
+            });
+
+            document.getElementById('sidebarAnalytics')?.addEventListener('click', () => {
+                setActiveNav('sidebarAnalytics');
+                showAnalytics();
+            });
+
+            document.getElementById('sidebarForensics')?.addEventListener('click', () => {
+                setActiveNav('sidebarForensics');
+                showForensics();
+            });
+
+            document.getElementById('sidebarPlaybooks')?.addEventListener('click', () => {
+                setActiveNav('sidebarPlaybooks');
+                showPlaybooks();
+            });
+
+            document.getElementById('sidebarSettings')?.addEventListener('click', () => {
+                setActiveNav('sidebarSettings');
+                showSettings();
+            });
+
+            // Other event listeners
+            document.getElementById('logoutBtn')?.addEventListener('click', function() {
+                window.location.href = '/';
+            });
+
+            
+
+            // View All buttons
+            document.getElementById('viewAllAlertsBtn')?.addEventListener('click', () => {
+                showFullAlerts();
+            });
+            document.getElementById('viewAllLogsBtn')?.addEventListener('click', () => {
+                loadLogs();
+            });
+
+            // Back to Dashboard buttons
+            document.getElementById('backToDashboardBtn')?.addEventListener('click', () => {
+                setActiveNav('sidebarDashboard');
+                showDashboard();
+            });
+
+            document.getElementById('backToDashboardFromAnalytics')?.addEventListener('click', () => {
+                setActiveNav('sidebarDashboard');
+                showDashboard();
+            });
+
+            document.getElementById('backToDashboardFromForensics')?.addEventListener('click', () => {
+                setActiveNav('sidebarDashboard');
+                showDashboard();
+            });
+
+            document.getElementById('backToDashboardFromPlaybooks')?.addEventListener('click', () => {
+                setActiveNav('sidebarDashboard');
+                showDashboard();
+            });
+
+            document.getElementById('backToDashboardFromSettings')?.addEventListener('click', () => {
+                setActiveNav('sidebarDashboard');
+                showDashboard();
+            });
+            // Set default active nav and ensure dashboard sections are visible on initial attach
+            setActiveNav('sidebarDashboard');
+            showDashboard();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', attachEventListeners);
+        } else {
+            attachEventListeners();
+        }
+        // Global handler to suppress non-fatal AbortErrors (e.g. media play interruptions)
+        window.addEventListener('unhandledrejection', function(ev) {
+            try {
+                const reason = ev && ev.reason;
+                if (reason && (reason.name === 'AbortError' || (reason.message && reason.message.includes('play() request was interrupted')))) {
+                    console.warn('Suppressed non-fatal AbortError:', reason);
+                    ev.preventDefault && ev.preventDefault();
+                    return;
+                }
+            } catch (e) {
+                // swallow handler errors
+            }
+            console.error('Unhandled promise rejection:', ev && ev.reason);
+        });
+
+        // Global error hook for extra diagnostics without breaking UI
+        window.addEventListener('error', function(e) {
+            try {
+                console.error('Global error caught:', e && (e.error || e.message));
+            } catch (ex) {}
+        });
+
+        // Initial load and periodic refresh (refresh only what is visible)
+        loadAlerts();
+        loadLogs();
+        setInterval(() => {
+            loadAlerts();
+            loadLogs();
+            try {
+                if (!document.getElementById('analyticsView').classList.contains('hidden')) loadAnalytics();
+                if (!document.getElementById('forensicsView').classList.contains('hidden')) loadForensics();
+                if (!document.getElementById('playbooksView').classList.contains('hidden')) loadPlaybooks();
+                if (!document.getElementById('settingsView').classList.contains('hidden')) loadSettings();
+            } catch (e) {
+                console.error('Periodic refresh error', e);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
